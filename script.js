@@ -87,10 +87,43 @@ function createPhotoCardElement(photo) {
              onerror="this.onerror=null; this.src='${config.placeholderImage}'">
           <div class="photo-info">
              <div class="photo-name">${photo.name}</div>
+             <button class="delete-button">Excluir</button>
           </div>
         `; // Incluir Preenchimento do Card
 
+  // Adiciona evento de clique ao botão de excluir
+  const deleteButton = card.querySelector(".delete-button");
+  deleteButton.addEventListener("click", () => {
+    deletePhoto(photo._id, card);
+  });
+
   return card;
+}
+
+// Função para excluir a foto
+async function deletePhoto(photoId, cardElement) {
+  try {
+    // Faz requisição DELETE para a API
+    const response = await fetch(`${config.apiUrl}/${photoId}`, {
+      method: "DELETE",
+    });
+
+    // Verifica se a resposta foi bem sucedida
+    if (!response.ok) {
+      throw new Error("Falha ao excluir a foto");
+    }
+
+    // Remove o card da foto do DOM
+    cardElement.remove();
+
+    // Notificação de sucesso para o usuário
+    showNotification("Foto excluída com sucesso!");
+  } catch (error) {
+    // Mostrar em caso de erro no console
+    console.error("Erro ao excluir a foto:", error);
+    // Notificação de falha para o usuário
+    showNotification("Falha ao excluir a foto", "error");
+  }
 }
 
 // Envia nova foto para o servidor (Recebe FormDAta com nome e arquivo)

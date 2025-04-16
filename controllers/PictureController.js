@@ -63,3 +63,16 @@ exports.getImage = async (req, res) => {
     res.status(500).json({ message: "Erro ao buscar Imagem!" });
   }
 };
+
+// Função para excluir uma imagem específica
+exports.delete = async (req, res) => {
+    try {
+      const picture = await Picture.findByIdAndDelete(req.params.id);
+      if (!picture) {
+        return res.status(404).send({ message: "Imagem não encontrada" });
+      }
+      res.status(200).send({ message: "Imagem excluída com sucesso" });
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  };
